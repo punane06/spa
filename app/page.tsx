@@ -1,11 +1,10 @@
-
+import { IntroContainer } from "./components/ui/ContainerProps";
+import { H1 } from "./components/ui/HeadingProps"; 
 export default function Home() {
   return (
-    <div className="flex">
-      <div className="w-1/4 p-4">Sidebar</div>
-      <main className="p-4">
-        Main
-      </main>
-    </div>
+    <IntroContainer>
+      <H1>Trinidad Wiseman</H1>
+      <p className="font-booster font-bold text-[36px] text-alternateTextColor">SPA proovitöö</p>
+    </IntroContainer>
   );
 }

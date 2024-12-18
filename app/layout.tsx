@@ -1,33 +1,55 @@
-import type { Metadata } from "next";
+'use client'
 import localFont from "next/font/local";
+import { Open_Sans } from 'next/font/google'
 import "./globals.css";
+import Navbar from "./components/Navbar";
+import Header from "./components/Header";
+import { MainContainer } from "./components/ui/ContainerProps";
+import { useState } from "react";
 
-const twnFont = localFont({ 
-  src: './fonts/BoosterNextFY-Regular.woff2',
-  variable: '--twn-font'
+const openSans = Open_Sans({
+  subsets: ['latin'],
+  display: 'swap',
 })
 
-const twnFontBold = localFont({ 
-  src: './fonts/BoosterNextFY-Bold.woff2',
-  variable: '--twn-font-bold'
+const boosterNextFY = localFont({
+  src: [
+    {
+      path: './fonts/BoosterNextFY-Regular.woff2',
+      weight: '400',
+      style: 'normal',
+    },
+    {
+      path: './fonts/BoosterNextFY-Bold.woff2',
+      weight: '700',
+      style: 'bold',
+    }
+  ],
+  variable: '--font-booster'
 })
-
-export const metadata: Metadata = {
-  title: "SPA task - Kerner",
-  description: "TWN test task by Kadi Kerner",
-};
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  const [isOpen, setIsOpen] = useState(false);
+  const toggleNavbar = () => {
+    setIsOpen(!isOpen);
+    console.log('toggle')
+  }
+
   return (
-    <html lang="en">
+    <html lang="en" className={`${openSans.className} ${boosterNextFY.variable}`}>
       <body
-        className={`${twnFont.variable} ${twnFontBold.variable} antialiased`}
+        className={`flex h-screen bg-backgroundColor relative overflow-hidden`}
       >
-        {children}
+        <Header isOpen={isOpen} toggleNavbar={toggleNavbar} />
+        <Navbar isOpen={isOpen} />
+        <MainContainer>
+          {children}
+        </MainContainer>
       </body>
     </html>
   );
