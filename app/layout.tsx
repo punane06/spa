@@ -37,13 +37,12 @@ export default function RootLayout({
   const [isOpen, setIsOpen] = useState(false);
   const toggleNavbar = () => {
     setIsOpen(!isOpen);
-    console.log('toggle')
   }
 
   return (
     <html lang="en" className={`${openSans.className} ${boosterNextFY.variable}`}>
       <body
-        className={`flex h-screen bg-backgroundColor relative overflow-hidden`}
+        className={`flex h-screen text-white bg-backgroundColor relative overflow-auto`}
       >
         <Header isOpen={isOpen} toggleNavbar={toggleNavbar} />
         <Navbar isOpen={isOpen} />

@@ -14,12 +14,12 @@ const Header = ({isOpen, toggleNavbar}: HeaderProps) => {
       <button onClick={toggleNavbar}>
         {
           isOpen ?
-            <Image className='h-full my-0 mx-0 text-clip' src="/close.svg" alt="BG-left" width={20} height={100} priority />
+            <Image className='h-full my-0 mx-0 text-clip w-auto'  src="/close.svg" alt="BG-left" width={20} height={100} priority />
          :
-            <Image className='h-full my-0 mx-0 text-clip' src="/burger.svg" alt="BG-left" width={20} height={100} priority />
+            <Image className='h-full my-0 mx-0 text-clip w-auto' src="/burger.svg" alt="BG-left" width={20} height={100} priority />
         }
       </button>
-      <Image className='h-full my-0 mx-auto text-clip' src="/logo.svg" alt="Logo" width={150} height={250} priority /> 
+      <Image className='h-full my-0 mx-auto text-clip w-auto' src="/logo.svg" alt="Logo" width={150} height={250} priority /> 
     </div>
   )
 }

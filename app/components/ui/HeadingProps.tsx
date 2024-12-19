@@ -14,6 +14,6 @@ export const H1 = ({children, className}: HeadingProps) => {
 
 export const H2 = ({children, className}: HeadingProps) => {
     return (
-        <h1 className={`font-booster font-bold text-[36px]  uppercase ${className || ''}`}>{children}</h1>
+        <h2 className={`font-booster flex justify-center text-center font-bold text-[24px] md:text-[36px] text-centers uppercase ${className || ''}`}>{children}</h2>
     );
 }; 
