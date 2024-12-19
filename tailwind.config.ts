@@ -18,7 +18,8 @@ export default {
         blockColor: '#efefef',
       },
       screens: {
-        'md': '620px',
+        /* TODO 960px */
+        'md': '660px',
         'xl': '1000px',
       },
       fontFamily: {

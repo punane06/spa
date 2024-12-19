@@ -19,7 +19,7 @@ const Header = ({isOpen, toggleNavbar}: HeaderProps) => {
             <Image className='h-full my-0 mx-0 text-clip' src="/burger.svg" alt="BG-left" width={20} height={100} priority />
         }
       </button>
-      <Image className='h-full my-0 mx-auto text-clip' src="/logo.svg" alt="BG-left" width={150} height={250} priority /> 
+      <Image className='h-full my-0 mx-auto text-clip' src="/logo.svg" alt="Logo" width={150} height={250} priority /> 
     </div>
   )
 }

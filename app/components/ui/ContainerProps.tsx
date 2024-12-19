@@ -4,6 +4,7 @@ import Image from 'next/image';
 interface ContainerProps {
     children: React.ReactNode;
     className?: string;
+    isOpen?: boolean;
 }
 
 export const MainContainer = ({children, className}: ContainerProps) => {
@@ -22,8 +23,8 @@ export const IntroContainer = ({children, className}: ContainerProps) => {
     );
 }; 
 
-export const NavbarContainer = ({children, className}: ContainerProps) => {
+export const NavbarContainer = ({children, className, isOpen}: ContainerProps) => {
     return (
-        <div className={`w-[220px] p-[25px] text-right uppercase text-textColor  top-0 left-0 text-base md:text-[19px] overflow-auto z-40 bg-white md:block hidden fixed h-screen ${className || ''}`}>{children}</div>
+        <div className={`w-[220px] p-[25px] text-right uppercase text-textColor  top-0 left-0 text-base md:text-[19px] overflow-auto z-40 bg-white fixed h-screen ${isOpen ? 'translate-x-0' : '-translate-x-full'} md:translate-x-0 ${className || ''}`}>{children}</div>
     );
 }; 
