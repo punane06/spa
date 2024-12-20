@@ -28,7 +28,7 @@ const Intro = () => {
                 </Link>
             </div>
             <H2 className="mt-[60px]">Materjalid</H2>
-            <div className="mt-[40px] pb-[40px] flex justify-center">
+            <div className="mt-[40px] pb-[80px] flex justify-center">
                 <Link target="_blank" href={"https://proovitoo.twn.ee/assets/fonts.zip"}>
                     <Button className="">Font</Button>
                 </Link>
