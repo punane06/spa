@@ -6,7 +6,7 @@ import Image from 'next/image'
 import Loading from "./loading";
 
 interface ArticleData {
-    body: any;
+    body: string;
     image: 
     {
         medium: string;
