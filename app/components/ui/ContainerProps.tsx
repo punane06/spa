@@ -19,7 +19,7 @@ export const MainContainer = ({children, className}: ContainerProps) => {
 
 export const IntroContainer = ({children, className}: ContainerProps) => {
     return (
-        <div className={`flex w-full flex-col items-center align-center justify-center text-center ${className || ''}`}>{children}</div>
+        <div className={`flex w-full flex-col md:mt-0 -mt-42 items-center align-center justify-center text-center ${className || ''}`}>{children}</div>
     );
 }; 
 
