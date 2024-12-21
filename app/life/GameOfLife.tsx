@@ -12,7 +12,7 @@ const GameOfLife = ({ numRows, numCols }: { numRows: number; numCols: number;}) 
     
     useEffect(() => {
         setGrid(createEmptyGrid());
-    }, [numRows, numCols]);
+    }, [numRows, numCols, createEmptyGrid]);
 
     const toggleCell = (row: number, col: number) => {
         const newGrid = grid.map((r) => [...r]);
@@ -49,6 +49,16 @@ const GameOfLife = ({ numRows, numCols }: { numRows: number; numCols: number;}) 
             return newGrid;
         });
     };
+
+    useEffect(() => {
+        let interval: NodeJS.Timeout;
+        if (isRunning) {
+            interval = setInterval(() => {
+                step();
+            }, 100);
+        }
+        return () => clearInterval(interval);
+    }, [isRunning, step]);
 
     const randomizeGrid = (numAliveCells: number) => {
         const newGrid = createEmptyGrid();
