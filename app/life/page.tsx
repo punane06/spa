@@ -23,7 +23,7 @@ const GameOfLifePage = () => {
 
     return (
         <ContentContainer>
-            <H1 className="mb-6">Conway's Game of Life</H1>
+            <H1 className="mb-6">Conway&apos;s Game of Life</H1>
             <div className="flex flex-wrap gap-x-4 gap-y-4">
                 <div className="flex-grow relative">
                     <div className="mb-2">Grid width</div>
