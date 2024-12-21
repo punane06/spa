@@ -1,16 +1,33 @@
+'use client';
+import { useState } from 'react';
 import { Button } from '../components/ui/ButtonProps';
 import { H1 } from '../components/ui/HeadingProps';
 import GameOfLife from './GameOfLife';
 import Image from 'next/image'
+import { ContentContainer } from '../components/ui/ContainerProps';
 
 const GameOfLifePage = () => {
+
+    const [gridWidth, setGridWidth] = useState(70);
+    const [gridHeight, setGridHeight] = useState(30);
+    /* const [speed, setSpeed] = useState('normal');
+    const [initialLifeProbability, setInitialLifeProbability] = useState(50); */
+
+    const handldeWidthChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setGridWidth(Number(e.target.value));
+    }
+
+    const handldeHeightChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setGridHeight(Number(e.target.value));
+    }
+
     return (
-        <div>
+        <ContentContainer>
             <H1 className="mb-6">Conway's Game of Life</H1>
             <div className="flex flex-wrap gap-x-4 gap-y-4">
                 <div className="flex-grow relative">
                     <div className="mb-2">Grid width</div>
-                    <select name="width" id="width" className="block w-full text-black h-10 rounded-md text-sm appearance-none px-4 radius-md ">
+                    <select name="width" id="width" onChange={handldeWidthChange} defaultValue={gridWidth} className="cursor-pointer block w-full text-black h-10 rounded-md text-sm appearance-none px-4 radius-md ">
                         <option value="10" className="block h-10">10</option>
                         <option value="20" className="block h-10">20</option>
                         <option value="30" className="block h-10">30</option>
@@ -20,18 +37,18 @@ const GameOfLifePage = () => {
                         <option value="70" className="block h-10">70</option>
                         <option value="80" className="block h-10">80</option>
                     </select>
-                    <Image className='absolute text-[#333333] fill   right-3 bottom-2.5 -rotate-90' src='/arrow-dropdown.svg' alt="prev" width={20} height={20} priority />
+                    <Image className='absolute text-[#333333] fill   right-3 bottom-7 -rotate-90' src='/arrow-dropdown.svg' alt="prev" width={20} height={20} priority />
                 </div>
                 <div className="flex-grow relative">
                     <div className="mb-2">Grid height</div>
-                    <select name="height" id="height" className="block relative w-full text-sm h-10 text-black rounded-md appearance-none px-4 radius-md ">
+                    <select name="height" id="height" onChange={handldeHeightChange} defaultValue={gridHeight} className="block relative w-full text-sm h-10 text-black rounded-md appearance-none px-4 radius-md ">
                         <option value="10" className="block h-10">10</option>
                         <option value="20" className="block h-10">20</option>
                         <option value="30" className="block h-10">30</option>
                         <option value="40" className="block h-10">40</option>
                         <option value="50" className="block h-10">50</option>
                     </select>
-                    <Image className='absolute text-[#333333] fill   right-3 bottom-2.5 -rotate-90' src='/arrow-dropdown.svg' alt="prev" width={20} height={20} priority />
+                    <Image className='absolute text-[#333333] fill   right-3 bottom-7 -rotate-90' src='/arrow-dropdown.svg' alt="prev" width={20} height={20} priority />
                 </div>
                 <div className="flex-grow relative">
                     <div className="mb-2">Speed</div>
@@ -40,7 +57,7 @@ const GameOfLifePage = () => {
                         <option value="normal" className="block h-10">Normal</option>
                         <option value="fast" className="block h-10">Fast</option>
                     </select>
-                    <Image className='absolute text-[#333333] fill   right-3 bottom-2.5 -rotate-90' src='/arrow-dropdown.svg' alt="prev" width={20} height={20} priority />
+                    <Image className='absolute text-[#333333] fill   right-3 bottom-7 -rotate-90' src='/arrow-dropdown.svg' alt="prev" width={20} height={20} priority />
                 </div>
                 <div className="flex-grow relative">
                     <div className="mb-2">Initial life probability</div>
@@ -56,7 +73,7 @@ const GameOfLifePage = () => {
                         <option value="90" className="block h-10">90%</option>
                         <option value="100" className="block h-10">100%</option>
                     </select>
-                    <Image className='absolute text-[#333333] fill   right-3 bottom-2.5 -rotate-90' src='/arrow-dropdown.svg' alt="prev" width={20} height={20} priority />
+                    <Image className='absolute text-[#333333] fill   right-3 bottom-7 -rotate-90' src='/arrow-dropdown.svg' alt="prev" width={20} height={20} priority />
                 </div>
                 <Button className="text-[12px] mt-[27px] px-6 py-3">Pause</Button>
                 <Button className="text-[12px] mt-[27px] px-6 py-3">Apply</Button>
@@ -68,8 +85,8 @@ const GameOfLifePage = () => {
                     <span className="absolute right-2 pl-10 top-1/2 transform -translate-y-1/2">2.5%</span>
                 </div>
             </div>
-            <GameOfLife />
-        </div>
+            <GameOfLife numRows={gridHeight} numCols={gridWidth} />
+        </ContentContainer>
     );
 };
 

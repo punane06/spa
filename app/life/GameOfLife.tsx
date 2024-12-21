@@ -1,16 +1,18 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 
-const numRows = 20;
-const numCols = 20;
 
-const createEmptyGrid = () => {
-    return Array.from({ length: numRows }, () => Array(numCols).fill(false));
-};
 
-const GameOfLife = () => {
+const GameOfLife = ({ numRows, numCols }: { numRows: number; numCols: number;}) => {
+    const createEmptyGrid = () => {
+        return Array.from({ length: numRows }, () => Array(numCols).fill(false));
+    };
     const [grid, setGrid] = useState(createEmptyGrid());
     const [isRunning, setIsRunning] = useState(false);
+    
+    useEffect(() => {
+        setGrid(createEmptyGrid());
+    }, [numRows, numCols]);
 
     const toggleCell = (row: number, col: number) => {
         const newGrid = grid.map((r) => [...r]);
@@ -73,15 +75,14 @@ const GameOfLife = () => {
     }, [isRunning]);
 
     return (
-        <div>
-            <h1>Conway's Game of Life</h1>
+        <div className='flex flex-col items-center justify-center'>
             <button onClick={() => randomizeGrid(100)}>Randomize</button>
-            <div style={{ display: 'grid', gridTemplateColumns: `repeat(${numCols}, 20px)` }}>
+            <div style={{ display: 'grid', gridTemplateColumns: `repeat(${numCols}, 10px)` }}>
                 {grid.map((row, r) => 
                     row.map((cell, c) => (
                         <div key={`${r}-${c}`} onClick={() => toggleCell(r, c)} style={{
-                            width: '20px',
-                            height: '20px',
+                            width: '10px',
+                            height: '10px',
                             backgroundColor: cell ? 'black' : 'white',
                             border: '1px solid gray',
                         }} />
