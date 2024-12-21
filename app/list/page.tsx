@@ -95,7 +95,7 @@ const TableComponent = () => {
                     disabled={currentPage === 1}
                     className={`w-8 h-8 ${currentPage === 1 ? 'opacity-40 cursor-auto' : 'cursor-pointer hover:rounded-[2.5rem] hover:border hover:border-white'}`} 
                 >
-                    <Image className='h-full my-0 mx-auto text-clip w-auto p-1' src='/arrow.svg' alt="Logo" width={150} height={250} priority />
+                    <Image className='h-full my-0 mx-auto text-clip w-auto p-1' src='/arrow.svg' alt="prev" width={150} height={250} priority />
                 </button>
                 {getPaginationRange(currentPage, totalPages).map((page) => (
                     <button 
@@ -111,7 +111,7 @@ const TableComponent = () => {
                     disabled={currentPage === totalPages}
                     className={`w-8 h-8 ml-4 ${currentPage === totalPages ? 'opacity-40 cursor-auto' : 'cursor-pointer hover:rounded-[2.5rem] hover:border hover:border-white'}`} 
                 >
-                    <Image className='h-full my-0 mx-auto text-clip w-auto p-1 rotate-180' src='/arrow.svg' alt="Logo" width={150} height={250} priority />
+                    <Image className='h-full my-0 mx-auto text-clip w-auto p-1 rotate-180' src='/arrow.svg' alt="next" width={150} height={250} priority />
                 </button>
             </div>
         </ContentContainer>
