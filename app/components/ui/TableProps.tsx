@@ -3,6 +3,7 @@ import React from 'react';
 interface TableProps {
     children: React.ReactNode;
     className?: string;
+    onClick?: () => void
 }
 
 export const Table = ({children, className}: TableProps) => {
@@ -29,9 +30,9 @@ export const TrHead = ({children, className}: TableProps) => {
     );
 }; 
 
-export const Th = ({children, className}: TableProps) => {
+export const Th = ({children, className, onClick}: TableProps) => {
     return (
-        <th className={`py-[6px] px-2 md:py-[10px] md:px-4 ${className || ''}`}>
+        <th className={`py-[6px] px-2 md:py-[10px] md:px-4 ${className || ''}`} onClick={onClick}>
             {children}
         </th>
     );

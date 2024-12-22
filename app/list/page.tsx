@@ -1,11 +1,11 @@
 'use client'
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { H1 } from "../components/ui/HeadingProps";
 import { ContentContainer } from "../components/ui/ContainerProps";
 import { Table, Td, Th, THead, TrBody, TrHead } from '../components/ui/TableProps';
 import Image from 'next/image'
 
-interface DataItem {
+export interface DataItem {
     id: string;
     firstname: string;
     surname: string;
@@ -19,18 +19,24 @@ const MAX_ITEMS = 108;
 
 const TableComponent = () => {
     const [data, setData] = useState<DataItem[]>([]);
+    const [defaultData, setDefaultData] = useState<DataItem[]>([]);
     const [currentPage, setCurrentPage] = useState(1);
+    const [firstnameSortOrder, setFirstnameSortOrder] = useState(0);
+    const [surnameSortOrder, setSurnameSortOrder] = useState(0);
+    const [sexSortOrder, setSexSortOrder] = useState(0);
+    const [birthdaySortOrder, setBirthdaySortOrder] = useState(0);
 
     useEffect(() => {
         const fetchData = async () => {
             const response = await fetch('https://proovitoo.twn.ee/api/list');
             const result = await response.json() as { list: DataItem[] };
-            setData(result.list.slice(0, MAX_ITEMS));
+            const limitedData = result.list.slice(0, MAX_ITEMS);
+            setData(limitedData);
+            setDefaultData(limitedData);
         };
+
         fetchData();
     }, []);
-
-    console.log(data);
 
     const extractBirthday = (personalCode: number) => {
         const personalCodeStr = personalCode.toString();
@@ -62,17 +68,160 @@ const TableComponent = () => {
     const totalPages = Math.ceil(Math.min(data.length, MAX_ITEMS) / ITEMS_PER_PAGE);
     const displayedData = data.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
+    const handleFirstnameSort = () => {
+        setSurnameSortOrder(0);
+        setSexSortOrder(0);
+        setBirthdaySortOrder(0);
+        setFirstnameSortOrder((prevOrder) => (prevOrder + 1) % 3);
+
+        let sortedData;
+        if (firstnameSortOrder === 2) {
+            sortedData = defaultData;
+        } else if (firstnameSortOrder === 0) {
+            sortedData = [...data].sort((a, b) => {
+                const firstnameA = a.firstname ?? '';
+                const firstnameB = b.firstname ?? '';
+                return firstnameA.localeCompare(firstnameB, 'et');
+            });
+        } else if (firstnameSortOrder === 1) {
+            sortedData = [...data].sort((a, b) => {
+                const firstnameA = a.firstname ?? '';
+                const firstnameB = b.firstname ?? '';
+                return firstnameB.localeCompare(firstnameA, 'et');
+            });
+        }
+
+        const dataToSet = sortedData || [];
+        setData(dataToSet);
+    };
+
+    const handleSurnameSort = () => {
+        setFirstnameSortOrder(0);
+        setSexSortOrder(0);
+        setBirthdaySortOrder(0);
+        setSurnameSortOrder((prevOrder) => (prevOrder + 1) % 3);
+
+        let sortedData;
+        if (surnameSortOrder === 2) {
+            sortedData = defaultData;
+        } else if (surnameSortOrder === 0) {
+            sortedData = [...data].sort((a, b) => {
+                const surnameA = a.surname || '';
+                const surnameB = b.surname || '';
+                return surnameA.localeCompare(surnameB, 'et');
+            });
+        } else if (surnameSortOrder === 1) {
+            sortedData = [...data].sort((a, b) => {
+                const surnameA = a.surname || '';
+                const surnameB = b.surname || '';
+                return surnameB.localeCompare(surnameA, 'et');
+            });
+        }
+
+        const dataToSet = sortedData || [];
+        setData(dataToSet);
+    };
+
+    const handleSexSort = () => {
+        setFirstnameSortOrder(0);
+        setSurnameSortOrder(0);
+        setBirthdaySortOrder(0);
+        setSexSortOrder((prevOrder) => (prevOrder + 1) % 3);
+
+        let sortedData;
+        if (sexSortOrder === 2) {
+            sortedData = defaultData;
+        } else if (sexSortOrder === 0) {
+            sortedData = [...data].sort((a, b) => {
+                return (a.sex || '').localeCompare(b.sex || '');
+            });
+        } else if (sexSortOrder === 1) {
+            sortedData = [...data].sort((a, b) => {
+                return (b.sex || '').localeCompare(a.sex || '');
+            });
+        }
+
+        const dataToSet = sortedData || [];
+        setData(dataToSet);
+    };
+
+    const handleBirthdaySort = () => {
+        setFirstnameSortOrder(0);
+        setSurnameSortOrder(0);
+        setSexSortOrder(0);
+        setBirthdaySortOrder((prevOrder) => (prevOrder + 1) % 3);
+
+        let sortedData;
+        if (birthdaySortOrder === 2) {
+            sortedData = defaultData;
+        } else if (birthdaySortOrder === 0) {
+            sortedData = [...data].sort((a, b) => {
+                const birthdayA = extractBirthday(parseInt(a.personal_code));
+                const birthdayB = extractBirthday(parseInt(b.personal_code));
+                const [dayA, monthA, yearA] = birthdayA.split('.').map(Number);
+                const [dayB, monthB, yearB] = birthdayB.split('.').map(Number);
+                return new Date(yearA, monthA - 1, dayA).getTime() - new Date(yearB, monthB - 1, dayB).getTime();
+            });
+        } else if (birthdaySortOrder === 1) {
+            sortedData = [...data].sort((a, b) => {
+                const birthdayA = extractBirthday(parseInt(a.personal_code));
+                const birthdayB = extractBirthday(parseInt(b.personal_code));
+                const [dayA, monthA, yearA] = birthdayA.split('.').map(Number);
+                const [dayB, monthB, yearB] = birthdayB.split('.').map(Number);
+                return new Date(yearB, monthB - 1, dayB).getTime() - new Date(yearA, monthA - 1, dayA).getTime();
+            });
+        }
+
+        const dataToSet = sortedData || [];
+        setData(dataToSet);
+    };
+
     return (
         <ContentContainer>
             <H1 className="text-center mx-auto mb-[24px] md:mb-[30px] ">Nimekiri</H1>
+
             <div className="block overflow-auto w-full">
                 <Table>
                     <THead>
                         <TrHead>
-                            <Th>Eesnimi</Th>
-                            <Th>Perekonnanimi</Th>
-                            <Th>Sugu</Th>
-                            <Th>Sunnikuupäev</Th>
+                            <Th onClick={handleFirstnameSort} className="cursor-pointer">
+                                <div className="flex items-center">
+                                    <span className="mr-1">
+                                        Eesnimi
+                                    </span>
+                                    <div className="relative bg-red-300 h-full w-full">
+                                        <Image className={`absolute -bottom-1 rotate-0 ${firstnameSortOrder === 1 ? 'opacity-0' : ''}`} src='/arrow-filled.svg' alt="sort" width={20} height={20} priority />
+                                        <Image className={`absolute -top-1 rotate-180 ${firstnameSortOrder === 2 ? 'opacity-0' : ''}`} src='/arrow-filled.svg' alt="sort" width={20} height={20} priority />
+                                    </div>
+                                </div>
+                            </Th>
+                            <Th onClick={handleSurnameSort} className="cursor-pointer">
+                                <div className="flex items-center">
+                                    <span className="mr-1">Perekonnanimi</span>
+                                    <div className="relative bg-red-300 h-full w-full">
+                                        <Image className={`absolute -bottom-1 rotate-0 ${surnameSortOrder === 1 ? 'opacity-0' : ''}`} src='/arrow-filled.svg' alt="sort" width={20} height={20} priority />
+                                        <Image className={`absolute -top-1 rotate-180 ${surnameSortOrder === 2 ? 'opacity-0' : ''}`} src='/arrow-filled.svg' alt="sort" width={20} height={20} priority />
+                                    </div>
+                                </div>
+                            </Th>
+                            <Th onClick={handleSexSort} className="cursor-pointer">
+                                <div className="flex items-center">
+                                    <span className="mr-1">Sugu</span>
+                                    <div className="relative bg-red-300 h-full w-full">
+                                        <Image className={`absolute -bottom-1 rotate-0 ${sexSortOrder === 1 ? 'opacity-0' : ''}`} src='/arrow-filled.svg' alt="sort" width={20} height={20} priority />
+                                        <Image className={`absolute -top-1 rotate-180 ${sexSortOrder === 2 ? 'opacity-0' : ''}`} src='/arrow-filled.svg' alt="sort" width={20} height={20} priority />
+                                    </div>
+                                </div>
+                            </Th>
+                            <Th onClick={handleBirthdaySort} className="cursor-pointer">
+                                <div className="flex items-center">
+                                    <span className="mr-1">Sünnikuupäev</span>
+                                    <div className="relative bg-red-300 h-full w-full">
+                                        <Image className={`absolute -bottom-1 rotate-0 ${birthdaySortOrder === 1 ? 'opacity-0' : ''}`} src='/arrow-filled.svg' alt="sort" width={20} height={20} priority />
+                                        <Image className={`absolute -top-1 rotate-180 ${birthdaySortOrder === 2 ? 'opacity-0' : ''}`} src='/arrow-filled.svg' alt="sort" width={20} height={20} priority />
+                                    </div>
+                                </div>
+                            </Th>
                             <Th>Telefon</Th>
                         </TrHead>
                     </THead>
