@@ -10,24 +10,32 @@ const GameOfLifePage = () => {
 
     const [gridWidth, setGridWidth] = useState(70);
     const [gridHeight, setGridHeight] = useState(30);
-    /* const [speed, setSpeed] = useState('normal');
-    const [initialLifeProbability, setInitialLifeProbability] = useState(50); */
+    const [initialLifeProbability, setInitialLifeProbability] = useState(50);
+    const [isRunning, setIsRunning] = useState(false);
 
-    const handldeWidthChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setGridWidth(Number(e.target.value));
-    }
+    const [tempWidth, setTempWidth] = useState(gridWidth);
+    const [tempHeight, setTempHeight] = useState(gridHeight);
+    const [tempInitialLifeProbability, setTempInitialLifeProbability] = useState(initialLifeProbability);
 
-    const handldeHeightChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        setGridHeight(Number(e.target.value));
-    }
+    const handleWidthChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setTempWidth(Number(e.target.value));
+    };
+
+    const handleHeightChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setTempHeight(Number(e.target.value));
+    };
+
+    const handleInitialLifeProbabilityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        setTempInitialLifeProbability(Number(e.target.value));
+    };
 
     return (
         <ContentContainer>
-            <H1 className="mb-6">Conway&apos;s Game of Life</H1>
+            <H1 className="mb-6">Conway's Game of Life</H1>
             <div className="flex flex-wrap gap-x-4 gap-y-4">
                 <div className="flex-grow relative">
                     <div className="mb-2">Grid width</div>
-                    <select name="width" id="width" onChange={handldeWidthChange} defaultValue={gridWidth} className="cursor-pointer block w-full text-black h-10 rounded-md text-sm appearance-none px-4 radius-md ">
+                    <select name="width" id="width" onChange={handleWidthChange} defaultValue={gridWidth} className="cursor-pointer block w-full text-black h-10 rounded-md text-sm appearance-none px-4 radius-md ">
                         <option value="10" className="block h-10">10</option>
                         <option value="20" className="block h-10">20</option>
                         <option value="30" className="block h-10">30</option>
@@ -41,7 +49,7 @@ const GameOfLifePage = () => {
                 </div>
                 <div className="flex-grow relative">
                     <div className="mb-2">Grid height</div>
-                    <select name="height" id="height" onChange={handldeHeightChange} defaultValue={gridHeight} className="block relative w-full text-sm h-10 text-black rounded-md appearance-none px-4 radius-md ">
+                    <select name="height" id="height" onChange={handleHeightChange} defaultValue={gridHeight} className="block relative w-full text-sm h-10 text-black rounded-md appearance-none px-4 radius-md ">
                         <option value="10" className="block h-10">10</option>
                         <option value="20" className="block h-10">20</option>
                         <option value="30" className="block h-10">30</option>
@@ -61,7 +69,7 @@ const GameOfLifePage = () => {
                 </div>
                 <div className="flex-grow relative">
                     <div className="mb-2">Initial life probability</div>
-                    <select name="probability" id="probability" className="block w-full text-sm h-10 text-black rounded-md appearance-none px-4 radius-md ">
+                    <select defaultValue={initialLifeProbability} onChange={handleInitialLifeProbabilityChange} name="probability" id="probability" className="block w-full text-sm h-10 text-black rounded-md appearance-none px-4 radius-md ">
                         <option value="10" className="block h-10">10%</option>
                         <option value="20" className="block h-10">20%</option>
                         <option value="30" className="block h-10">30%</option>
@@ -75,8 +83,14 @@ const GameOfLifePage = () => {
                     </select>
                     <Image className='absolute text-[#333333] fill   right-3 bottom-7 -rotate-90' src='/arrow-dropdown.svg' alt="prev" width={20} height={20} priority />
                 </div>
-                <Button className="text-[12px] mt-[27px] px-6 py-3">Pause</Button>
-                <Button className="text-[12px] mt-[27px] px-6 py-3">Apply</Button>
+                <Button className="text-[12px] mt-[27px] px-6 py-3" onClick={() => setIsRunning(!isRunning)}>{isRunning ? 'Pause' : 'Resume'}</Button>
+                <Button className="text-[12px] mt-[27px] px-6 py-3" onClick={() => {
+                    setGridWidth(tempWidth);
+                    setGridHeight(tempHeight);
+                    setInitialLifeProbability(tempInitialLifeProbability);
+                }}>
+                    Apply
+                </Button>
             </div>
             <span className="mt-6">Currently alive</span>
             <div className="block w-full h-8 bg-[#f1f1f1] rounded-md overflow-hidden relative mb-[20px]">
@@ -85,7 +99,7 @@ const GameOfLifePage = () => {
                     <span className="absolute right-2 pl-10 top-1/2 transform -translate-y-1/2">2.5%</span>
                 </div>
             </div>
-            <GameOfLife numRows={gridHeight} numCols={gridWidth} />
+            <GameOfLife numRows={gridHeight} numCols={gridWidth} initialLifeProbability={initialLifeProbability} isRunning={isRunning} />
         </ContentContainer>
     );
 };

@@ -9,7 +9,7 @@ interface ContainerProps {
 
 export const MainContainer = ({children, className}: ContainerProps) => {
     return (
-        <main className={`w-full h-screen overflow-auto md:ml-[220px] md:py-20 md:px-10 pt-[120px] px-6 relative md:pt-[120px] mb-30  flex ${className || ''}`}>
+        <main className={`w-full h-screen overflow-auto md:ml-[220px] md:py-20 md:px-10 pt-[120px] px-6 relative md:pt-[80px] mb-30  flex ${className || ''}`}>
             <Image className='fixed md:ml-[220px] ml-0 -z-10 bottom-0 left-0 object-cover' src="/bg-deco-left.svg" alt="BG-left" width={150} height={250} priority />
             <Image className='fixed -z-10 top-0 right-0 object-cover' src="/bg-deco-right.svg" alt="BG-right" width={250} height={150} priority />
             {children}
