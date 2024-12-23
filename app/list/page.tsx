@@ -5,6 +5,7 @@ import { ContentContainer } from "../components/ui/ContainerProps";
 import { Table, Td, Th, THead, TrBody, TrHead } from '../components/ui/TableProps';
 import Image from 'next/image'
 import Loading from "./loading";
+import React from "react";
 
 export interface DataItem {
     id: string;
@@ -13,20 +14,27 @@ export interface DataItem {
     sex: string;
     personal_code: string;
     phone: string;
+    body: string;
+    image:
+    {
+        large: string;
+        title: string;
+    };
 }
 
 const ITEMS_PER_PAGE = 10;
 const MAX_ITEMS = 108;
 
 const TableComponent = () => {
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState<boolean>(true);
     const [data, setData] = useState<DataItem[]>([]);
     const [defaultData, setDefaultData] = useState<DataItem[]>([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [firstnameSortOrder, setFirstnameSortOrder] = useState(0);
-    const [surnameSortOrder, setSurnameSortOrder] = useState(0);
-    const [sexSortOrder, setSexSortOrder] = useState(0);
-    const [birthdaySortOrder, setBirthdaySortOrder] = useState(0);
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [firstnameSortOrder, setFirstnameSortOrder] = useState<number>(0);
+    const [surnameSortOrder, setSurnameSortOrder] = useState<number>(0);
+    const [sexSortOrder, setSexSortOrder] = useState<number>(0);
+    const [birthdaySortOrder, setBirthdaySortOrder] = useState<number>(0);
+    const [activeRowId, setActiveRowId] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -180,12 +188,16 @@ const TableComponent = () => {
         setData(dataToSet);
     };
 
+    const toggleRowActive = (id: string) => {
+        setActiveRowId(activeRowId === id ? null : id);
+    };
+
     return (
         <ContentContainer>
             {loading ? <Loading />	 : (
                 <>
                     <H1 className="text-center mx-auto mb-[24px] md:mb-[30px] ">Nimekiri</H1>
-                    <div className="block overflow-auto w-full">
+                    <div className="block overflow-auto w-full text-base">
                         <Table>
                             <THead>
                                 <TrHead>
@@ -232,13 +244,34 @@ const TableComponent = () => {
                             </THead>
                             <tbody>
                                 {displayedData.map((item) => (
-                                    <TrBody key={item.id}>
-                                        <Td>{item.firstname}</Td>
-                                        <Td>{item.surname}</Td>
-                                        <Td>{item.sex === 'm' ? 'Mees' : 'Naine'}</Td>
-                                        <Td>{extractBirthday(parseInt(item.personal_code))}</Td>
-                                        <Td>{item.phone}</Td>
-                                    </TrBody>
+                                    <React.Fragment key={item.id}>
+                                        <TrBody className={`hover:bg-[#333333] cursor-pointer ${activeRowId === item.id ? '!bg-white text-[#333333] hover:text-[#333333]' : ''}`} onClick={() => toggleRowActive(item.id)}>
+                                            <Td>{item.firstname}</Td>
+                                            <Td>{item.surname}</Td>
+                                            <Td>{item.sex === 'm' ? 'Mees' : 'Naine'}</Td>
+                                            <Td>{extractBirthday(parseInt(item.personal_code))}</Td>
+                                            <Td>{item.phone}</Td>
+                                        </TrBody>
+                                        {activeRowId === item.id && (
+                                            <tr>
+                                                <Td colSpan={5} className="bg-white text-[#333333] h-full">
+                                                    <div className="flex justify-startmax-h-[230px]">
+                                                        <Image
+                                                            style={{ objectFit: "cover" }}
+                                                            className="w-[220px] h-[220px]"
+                                                            src={item.image.large}
+                                                            width={220}
+                                                            height={220}
+                                                            quality={90}
+                                                            priority
+                                                            alt="article image"
+                                                        />
+                                                        <p dangerouslySetInnerHTML={{ __html: item.body.replace(/<p>/g, '<p class="mb-8">').slice(0, Math.min(item.body.replace(/<p>/g, '<p class="mb-8">').lastIndexOf(' ', 325), item.body.replace(/<p>/g, '<p class="mb-8">').lastIndexOf(' ', 325) + 1)) + '...' }} className="max-h-[200px] truncate text-wrap ml-4 whitespace-nowrap overflow-hidden text-ellipsis" />
+                                                    </div>
+                                                </Td>
+                                            </tr>
+                                        )}
+                                    </React.Fragment>
                                 ))}
                             </tbody>
                         </Table>
