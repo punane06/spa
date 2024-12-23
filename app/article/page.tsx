@@ -7,9 +7,9 @@ import Loading from "./loading";
 
 interface ArticleData {
     body: string;
-    image: 
+    image:
     {
-        medium: string;
+        large: string;
         title: string;
     };
     title: string;
@@ -47,7 +47,16 @@ const Article = () => {
             <div className="my-[40px] font-bold" dangerouslySetInnerHTML={{ __html: articleData.intro }} />
             <div className="bg-blue-300 pb-[50%] block relative border-md translate-x-0">
                 {/* TODO articel image osa töölepi */}
-                <Image className='absolute top-0 left-0 w-full h-full object-cover opacity-0 z-10' src='/logo.svg' alt="Logo" width={150} height={250} priority />
+                <Image
+                    className="center mx-auto  hover:scale-110  z-20 overflow-hidden absolute -mt-0.5 top-0 left-0 right-0 bottom-0 bg-center bg-no-repeat bg-cover filter-blur-sm transition-transform duration-300"
+                    src={articleData.image.large}
+                    width={750}
+                    height={750}
+                    quality={90}
+                    priority
+                    alt="article image"
+                />
+                {/* <Image className='absolute top-0 left-0 w-full h-full object-cover opacity-0 z-10' src='/logo.svg' alt="Logo" width={150} height={250} priority /> */}
                 <div className="absolute bottom-0 left-0 w-full bg-black/50 z-20 px-6 py-2">{articleData.image.title}</div>
                 <div className="z-0 overflow-hidden absolute top-0 left-0 right-0 bottom-0 bg-center bg-no-repeat duration-200 transition-transform">
                     <div className="absolute top-0 left-0 right-0 bottom-0 -mt-2 bg-center bg-no-repeat bg-cover filter-blur-sm transition-transform duration-300"></div>
