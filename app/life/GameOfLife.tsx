@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 const GameOfLife = ({ numRows, numCols, initialLifeProbability, isRunning }: { numRows: number; numCols: number; initialLifeProbability: number; isRunning: boolean }) => {
     const createEmptyGrid = () => {
@@ -22,7 +22,7 @@ const GameOfLife = ({ numRows, numCols, initialLifeProbability, isRunning }: { n
         setGrid(createDeterministicGrid(initialLifeProbability, numRows, numCols));
     }, [initialLifeProbability, numRows, numCols]);
 
-    const step = () => {
+    const step = useCallback(() => {
         setGrid((prevGrid) => {
             const newGrid = createEmptyGrid();
             for (let r = 0; r < numRows; r++) {
@@ -49,14 +49,12 @@ const GameOfLife = ({ numRows, numCols, initialLifeProbability, isRunning }: { n
             }
             return newGrid;
         });
-    };
+    }, [numRows, numCols]);
 
     useEffect(() => {
         let interval: NodeJS.Timeout;
         if (localIsRunning) {
-            interval = setInterval(() => {
-                step();
-            }, 100);
+            interval = setInterval(step, 100);
         }
         return () => clearInterval(interval);
     }, [localIsRunning, step]);
