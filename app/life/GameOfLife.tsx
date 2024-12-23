@@ -1,26 +1,55 @@
 'use client';
 import React, { useState, useEffect, useCallback } from 'react';
 
-const GameOfLife = ({ numRows, numCols, initialLifeProbability, isRunning }: { numRows: number; numCols: number; initialLifeProbability: number; isRunning: boolean }) => {
+interface GameOfLifeProps {
+    numRows: number;
+    numCols: number;
+    initialLifeProbability: number;
+    isRunning: boolean;
+    onLivePercentageChange: (newPercentage: number) => void;
+}
+
+const GameOfLife = ({ numRows, numCols, initialLifeProbability, isRunning, onLivePercentageChange }: GameOfLifeProps) => {
     const createEmptyGrid = () => {
         return Array.from({ length: numRows }, () => Array(numCols).fill(false));
     };
     const createDeterministicGrid = (initialLifeProbability: number, numRows: number, numCols: number) => {
-        return Array.from({ length: numRows }, () => 
-            Array.from({ length: numCols }, () => Math.random() < initialLifeProbability / 100)
-        );
+        const totalCells = numRows * numCols;
+        const numAliveCells = Math.floor((initialLifeProbability / 100) * totalCells);
+        const percentageAliveCells = totalCells > 0 ? (numAliveCells / totalCells) * 100 : 0;
+        const grid = Array.from({ length: totalCells }, () => false); // Start with all dead cells
+
+        // Randomly select indices to set as alive
+        let indices = Array.from({ length: totalCells }, (_, i) => i);
+        for (let i = 0; i < numAliveCells; i++) {
+            const randomIndex = Math.floor(Math.random() * indices.length);
+            grid[indices[randomIndex]] = true; // Set cell to alive
+            indices.splice(randomIndex, 1); // Remove the index to avoid duplicates
+        }
+
+        // Convert flat grid back to 2D array
+        return { grid: Array.from({ length: numRows }, (_, rowIndex) => 
+            grid.slice(rowIndex * numCols, (rowIndex + 1) * numCols)
+        ), percentageAliveCells };
     };
 
     const [grid, setGrid] = useState(createEmptyGrid());
+    const [percentageAliveCells, setPercentageAliveCells] = useState(0);
     const [localIsRunning, setIsRunning] = useState(isRunning);
 
     useEffect(() => {
-        setGrid(createDeterministicGrid(initialLifeProbability, numRows, numCols));
+        const { grid: newGrid, percentageAliveCells: newPercentageAliveCells } = createDeterministicGrid(initialLifeProbability, numRows, numCols);
+        setGrid(newGrid);
+        setPercentageAliveCells(newPercentageAliveCells);
     }, [initialLifeProbability, numRows, numCols]);
 
     useEffect(() => {
-        setGrid(createDeterministicGrid(initialLifeProbability, numRows, numCols));
-    }, [initialLifeProbability, numRows, numCols]);
+        onLivePercentageChange(percentageAliveCells); // Call this only when percentageAliveCells changes
+    }, [percentageAliveCells]);
+
+    useEffect(() => {
+        setIsRunning(isRunning);
+    }, [isRunning]);
 
     const step = useCallback(() => {
         setGrid((prevGrid) => {
@@ -47,6 +76,10 @@ const GameOfLife = ({ numRows, numCols, initialLifeProbability, isRunning }: { n
                     }
                 }
             }
+            const totalCells = numRows * numCols;
+            const numAliveCells = newGrid.flat().filter(cell => cell).length;
+            const newPercentageAliveCells = totalCells > 0 ? (numAliveCells / totalCells) * 100 : 0;
+            setPercentageAliveCells(newPercentageAliveCells);
             return newGrid;
         });
     }, [numRows, numCols]);
@@ -70,16 +103,14 @@ const GameOfLife = ({ numRows, numCols, initialLifeProbability, isRunning }: { n
                 count++;
             }
         }
+        const totalCells = numRows * numCols;
+        const newPercentageAliveCells = totalCells > 0 ? (numAliveCells / totalCells) * 100 : 0;
         setGrid(newGrid);
+        setPercentageAliveCells(newPercentageAliveCells);
     };
-
-    useEffect(() => {
-        setIsRunning(isRunning);
-    }, [isRunning]);
 
     return (
         <div className='flex flex-col items-center justify-center'>
-            <button onClick={() => randomizeGrid(100)}>Randomize</button>
             <div style={{ display: 'grid', gridTemplateColumns: `repeat(${numCols}, 10px)` }}>
                 {grid.map((row, r) =>
                     row.map((cell, c) => (
@@ -92,7 +123,6 @@ const GameOfLife = ({ numRows, numCols, initialLifeProbability, isRunning }: { n
                     )))
                 }
             </div>
-            <button onClick={() => setGrid(createEmptyGrid())}>Reset</button>
         </div>
     );
 };

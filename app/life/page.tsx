@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { Button } from '../components/ui/ButtonProps';
 import { H1 } from '../components/ui/HeadingProps';
 import GameOfLife from './GameOfLife';
@@ -12,6 +12,7 @@ const GameOfLifePage = () => {
     const [gridHeight, setGridHeight] = useState(30);
     const [initialLifeProbability, setInitialLifeProbability] = useState(50);
     const [isRunning, setIsRunning] = useState(false);
+    const [currentLivePercentage, setCurrentLivePercentage] = useState(0);
 
     const [tempWidth, setTempWidth] = useState(gridWidth);
     const [tempHeight, setTempHeight] = useState(gridHeight);
@@ -28,6 +29,10 @@ const GameOfLifePage = () => {
     const handleInitialLifeProbabilityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
         setTempInitialLifeProbability(Number(e.target.value));
     };
+
+    const handleLivePercentageChange = useCallback((newPercentage: number) => {
+        setCurrentLivePercentage(newPercentage);
+    }, []);
 
     return (
         <ContentContainer>
@@ -94,12 +99,14 @@ const GameOfLifePage = () => {
             </div>
             <span className="mt-6">Currently alive</span>
             <div className="block w-full h-8 bg-[#f1f1f1] rounded-md overflow-hidden relative mb-[20px]">
-                <div className="w-[10%] relative px-2 h-full text-shadow-sm text-xs leading-8 bg-highlightColor transition duration-250 transition-width">
-                    {/* TODO kui protsent on vähem kui 10, tuleb span right-2 ära muuta, left-2 peale */}
-                    <span className="absolute right-2 pl-10 top-1/2 transform -translate-y-1/2">2.5%</span>
+                <div style={{ width: `${currentLivePercentage}%` }} className="relative px-2 h-full text-shadow-sm text-xs leading-8 bg-highlightColor transition duration-250 transition-width">
+                    <span
+                    /*  style={{ marginLeft: `${currentLivePercentage <= 10 ? '10px' : '0px'}` }} */
+                    /* TODO teksti taust shadow */
+                        className={`absolute right-2 pl-10 top-1/2 transform [text-shadow:_0_1px_2px_rgba(0_0_0_/_50%)] -translate-y-1/2 ${currentLivePercentage <= 6 ? 'relative top-[0.6px] -ml-8' : ''}`}>{currentLivePercentage.toFixed(1)}%</span>
                 </div>
             </div>
-            <GameOfLife numRows={gridHeight} numCols={gridWidth} initialLifeProbability={initialLifeProbability} isRunning={isRunning} />
+            <GameOfLife numRows={gridHeight} numCols={gridWidth} initialLifeProbability={initialLifeProbability} isRunning={isRunning} onLivePercentageChange={handleLivePercentageChange} />
         </ContentContainer>
     );
 };
