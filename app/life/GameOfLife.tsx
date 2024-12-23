@@ -10,9 +10,10 @@ interface GameOfLifeProps {
 }
 
 const GameOfLife = ({ numRows, numCols, initialLifeProbability, isRunning, onLivePercentageChange }: GameOfLifeProps) => {
-    const createEmptyGrid = () => {
+    const createEmptyGrid = useCallback(() => {
         return Array.from({ length: numRows }, () => Array(numCols).fill(false));
-    };
+    }, [numRows, numCols]);
+
     const createDeterministicGrid = (initialLifeProbability: number, numRows: number, numCols: number) => {
         const totalCells = numRows * numCols;
         const numAliveCells = Math.floor((initialLifeProbability / 100) * totalCells);
@@ -92,23 +93,6 @@ const GameOfLife = ({ numRows, numCols, initialLifeProbability, isRunning, onLiv
         }
         return () => clearInterval(interval);
     }, [localIsRunning, step]);
-
-    const randomizeGrid = (numAliveCells: number) => {
-        const newGrid = createEmptyGrid();
-        let count = 0;
-        while (count < numAliveCells) {
-            const row = Math.floor(Math.random() * numRows);
-            const col = Math.floor(Math.random() * numCols);
-            if (!newGrid[row][col]) {
-                newGrid[row][col] = true;
-                count++;
-            }
-        }
-        const totalCells = numRows * numCols;
-        const newPercentageAliveCells = totalCells > 0 ? (numAliveCells / totalCells) * 100 : 0;
-        setGrid(newGrid);
-        setPercentageAliveCells(newPercentageAliveCells);
-    };
 
     return (
         <div className='flex flex-col items-center justify-center'>
