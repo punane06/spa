@@ -17,20 +17,21 @@ const GameOfLife = ({ numRows, numCols, initialLifeProbability, isRunning, onLiv
         const totalCells = numRows * numCols;
         const numAliveCells = Math.floor((initialLifeProbability / 100) * totalCells);
         const percentageAliveCells = totalCells > 0 ? (numAliveCells / totalCells) * 100 : 0;
-        const grid = Array.from({ length: totalCells }, () => false); // Start with all dead cells
+        const grid = Array.from({ length: totalCells }, () => false);
 
-        // Randomly select indices to set as alive
-        let indices = Array.from({ length: totalCells }, (_, i) => i);
+        const indices = Array.from({ length: totalCells }, (_, i) => i);
         for (let i = 0; i < numAliveCells; i++) {
             const randomIndex = Math.floor(Math.random() * indices.length);
-            grid[indices[randomIndex]] = true; // Set cell to alive
-            indices.splice(randomIndex, 1); // Remove the index to avoid duplicates
+            grid[indices[randomIndex]] = true;
+            indices.splice(randomIndex, 1);
         }
 
-        // Convert flat grid back to 2D array
-        return { grid: Array.from({ length: numRows }, (_, rowIndex) => 
-            grid.slice(rowIndex * numCols, (rowIndex + 1) * numCols)
-        ), percentageAliveCells };
+        return {
+            grid: Array.from({ length: numRows }, (_, rowIndex) =>
+                grid.slice(rowIndex * numCols, (rowIndex + 1) * numCols)
+            ),
+            percentageAliveCells,
+        };
     };
 
     const [grid, setGrid] = useState(createEmptyGrid());
@@ -44,8 +45,8 @@ const GameOfLife = ({ numRows, numCols, initialLifeProbability, isRunning, onLiv
     }, [initialLifeProbability, numRows, numCols]);
 
     useEffect(() => {
-        onLivePercentageChange(percentageAliveCells); // Call this only when percentageAliveCells changes
-    }, [percentageAliveCells]);
+        onLivePercentageChange(percentageAliveCells);
+    }, [percentageAliveCells, onLivePercentageChange]);
 
     useEffect(() => {
         setIsRunning(isRunning);
@@ -82,7 +83,7 @@ const GameOfLife = ({ numRows, numCols, initialLifeProbability, isRunning, onLiv
             setPercentageAliveCells(newPercentageAliveCells);
             return newGrid;
         });
-    }, [numRows, numCols]);
+    }, [numRows, numCols, createEmptyGrid]);
 
     useEffect(() => {
         let interval: NodeJS.Timeout;
